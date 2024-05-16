@@ -31,7 +31,7 @@ void Request::ParseAndPrintStat(const Data::TransportCatalogue &transport_catalo
         }
         else
         {
-            printBusData(transport_catalogue, parsed.what, output);
+            PrintBusData(transport_catalogue, parsed.what, output);
         }
         return;
     }
@@ -44,19 +44,19 @@ void Request::ParseAndPrintStat(const Data::TransportCatalogue &transport_catalo
         }
         else
         {
-            printBusStopData(transport_catalogue, stop, output);
+            PrintBusStopData(transport_catalogue, stop, output);
         }
     }
 }
 
-void Request::printBusData(const Data::TransportCatalogue &transport_catalogue, std::string_view bus_name, std::ostream &output)
+void Request::PrintBusData(const Data::TransportCatalogue &transport_catalogue, std::string_view bus_name, std::ostream &output)
 {
     size_t stop_on_route = transport_catalogue.get_stop_count(bus_name);
     size_t unique_stop_on_route = transport_catalogue.get_unique_stop_count(bus_name);
     double route_length = transport_catalogue.get_route_length(bus_name);
     output << stop_on_route << " stops on route, "sv;
     output << unique_stop_on_route << " unique stops, "sv;
-    put_route_to_output(route_length, output);
+    PutRouteToOutput(route_length, output);
 }
 
 void Request::printBusStopData(const Data::TransportCatalogue &transport_catalogue, const Data::Stop* stop, std::ostream &output)
@@ -79,7 +79,7 @@ void Request::printBusStopData(const Data::TransportCatalogue &transport_catalog
     }
     output << "\n";
 }
-void Put_Route_To_Output(double value, std::ostream &output)
+void PutRouteToOutput(double value, std::ostream &output)
 {
     int precision = 1;
     while (true)
