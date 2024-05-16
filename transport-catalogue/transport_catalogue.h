@@ -21,8 +21,8 @@ class TransportCatalogue
     struct BusHash; 
 
 public: 
-    void Addbus(std::string_view name, std::vector<std::string_view> stops); 
-    void Addstop(std::string_view name, Coordinates &&coordinates); 
+    void Addbus(std::string_view name, std::vector<std::string_view> stops) const; 
+    void Addstop(std::string_view name, Coordinates &&coordinates) const; 
     const Bus *get_bus(std::string_view bus) const; 
 
 private: 
