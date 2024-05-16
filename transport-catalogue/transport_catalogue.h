@@ -26,10 +26,12 @@ public:
     const Bus *get_bus(std::string_view bus) const; 
 
 private: 
-    const std::unordered_set<Bus, Bus_Hash> &get_buses() const; 
+    const std::unordered_set<Bus, BusHash> &get_buses() const; 
     size_t GetStopCount(std::string_view bus) const; 
     size_t GetUniqueStopCount(std::string_view bus) const; 
     double GetRouteLength(std::string_view bus) const; 
+
+};
 
     struct Stop 
     { 
@@ -41,7 +43,6 @@ private:
             return name == stop.name && coordinates == stop.coordinates; 
         } 
     };
-};
         struct Bus 
         { 
             std::string name; 
@@ -69,7 +70,7 @@ private:
             }
         };
 
-        std::unordered_set<Bus, BusHash> buses_;
-        std::unordered_set<Stop, StopHash> stops_;
-    };
+        std::deque<Bus, BusHash> buses_;
+        std::deque<Stop, StopHash> stops_;
+    
 }
