@@ -21,12 +21,12 @@ class TransportCatalogue
     struct BusHash; 
 
 public: 
-    void Addbus(std::string_view name, std::vector<std::string_view> stops) const; 
-    void Addstop(std::string_view name, Coordinates &&coordinates) const; 
-    const Bus *get_bus(std::string_view bus) const; 
+    void const AddBus&(std::string_view name, std::vector<std::string_view> stops) const; 
+    void AddStop(std::string_view name, &Coordinates &&coordinates) const; 
+    const Bus *GetBus(std::string_view bus) const; 
 
 private: 
-    const std::unordered_set<Bus, BusHash> &get_buses() const; 
+    const std::unordered_set<Bus, BusHash> &GetBuses() const; 
     size_t GetStopCount(std::string_view bus) const; 
     size_t GetUniqueStopCount(std::string_view bus) const; 
     double GetRouteLength(std::string_view bus) const; 
