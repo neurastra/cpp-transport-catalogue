@@ -51,8 +51,6 @@ void Request::ParseAndPrintStat(const Data::TransportCatalogue &transport_catalo
 
 void Request::PrintBusData(const Data::TransportCatalogue &transport_catalogue, std::string_view bus_name, std::ostream &output)
 {
-    size_t stop_on_route = transport_catalogue.get_stop_count(bus_name);
-    size_t unique_stop_on_route = transport_catalogue.get_unique_stop_count(bus_name);
     double route_length = transport_catalogue.get_route_length(bus_name);
     output << stop_on_route << " stops on route, "sv;
     output << unique_stop_on_route << " unique stops, "sv;
