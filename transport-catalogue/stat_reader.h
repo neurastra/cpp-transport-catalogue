@@ -19,4 +19,4 @@ namespace Request
     void ParseAndPrintStat(const Data::TransportCatalogue &tansport_catalogue, std::string_view request, 
                            std::ostream &output); 
 } 
-void put_route_to_output(double value, std::ostream &output); 
+void PutRouteToOutput(double value, std::ostream &output); 
