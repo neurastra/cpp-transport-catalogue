@@ -59,7 +59,7 @@ void Request::PrintBusData(const Data::TransportCatalogue &transport_catalogue, 
     PutRouteToOutput(route_length, output);
 }
 
-void Request::printBusStopData(const Data::TransportCatalogue &transport_catalogue, const Data::Stop* stop, std::ostream &output)
+void Request::PrintBusStopData(const Data::TransportCatalogue &transport_catalogue, const Data::Stop* stop, std::ostream &output)
 {
     std::set<std::string_view> bus_list;
     for (const auto &bus : transport_catalogue.get_buses())
