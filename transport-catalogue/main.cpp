@@ -9,8 +9,10 @@ using namespace Input;
 
 int main() {
     Data::TransportCatalogue catalogue;
+
     int base_request_count;
     cin >> base_request_count >> ws;
+
     {
         InputReader reader;
         for (int i = 0; i < base_request_count; ++i) {
