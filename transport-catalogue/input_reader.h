@@ -15,10 +15,12 @@ namespace Input
         {
             return !command.empty();
         }
+
         bool operator!() const
         {
             return !operator bool();
         }
+
         std::string command;     
         std::string id;          
         std::string description; 
@@ -27,7 +29,9 @@ namespace Input
     class InputReader
     {
     public:
+
         void ParseLine(std::string_view line);
+
         void ApplyCommands(Data::TransportCatalogue &catalogue) const;
 
     private:
