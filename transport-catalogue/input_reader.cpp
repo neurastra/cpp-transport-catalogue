@@ -4,23 +4,26 @@
 #include <cassert>
 #include <iterator>
 
-
 using Geo::Coordinates;
 using namespace Input;
 
 Coordinates ParseCoordinates(std::string_view str)
 {
     static const double nan = std::nan("");
+
     auto not_space = str.find_first_not_of(' ');
     auto comma = str.find(',');
+
     if (comma == str.npos)
     {
         return {nan, nan};
     }
 
     auto not_space2 = str.find_first_not_of(' ', comma + 1);
+
     double lat = std::stod(std::string(str.substr(not_space, comma - not_space)));
     double lng = std::stod(std::string(str.substr(not_space2)));
+
     return {lat, lng};
 }
 
@@ -66,6 +69,7 @@ std::vector<std::string_view> ParseRoute(std::string_view route)
     auto stops = Split(route, '-');
     std::vector<std::string_view> results(stops.begin(), stops.end());
     results.insert(results.end(), std::next(stops.rbegin()), stops.rend());
+
     return results;
 }
 
@@ -102,6 +106,7 @@ void InputReader::ParseLine(std::string_view line)
         commands_.push_back(std::move(command_description));
     }
 }
+
 void InputReader::ApplyCommands([[maybe_unused]] Data::TransportCatalogue &catalogue) const
 {
     for (const auto &command : commands_)
