@@ -10,6 +10,7 @@ void TransportCatalogue::add_bus(std::string_view name, std::vector<std::string_
         bus.stops.push_back(get_stop(stop));
     buses_.insert(std::move(bus));
 }
+
 void TransportCatalogue::add_stop(std::string_view name, Coordinates &&coordinates)
 {
     Stop stop;
@@ -17,6 +18,7 @@ void TransportCatalogue::add_stop(std::string_view name, Coordinates &&coordinat
     stop.coordinates = std::move(coordinates);
     stops_.insert(std::move(stop));
 }
+
 const TransportCatalogue::Bus *TransportCatalogue::get_bus(std::string_view bus) const
 {
     auto found = std::find_if(buses_.cbegin(), buses_.cend(),
@@ -28,6 +30,7 @@ const TransportCatalogue::Bus *TransportCatalogue::get_bus(std::string_view bus)
         return &(*found);
     return nullptr;
 }
+
 const TransportCatalogue::Stop *TransportCatalogue::get_stop(std::string_view stop) const
 {
     auto found = std::find_if(stops_.cbegin(), stops_.cend(),
@@ -39,6 +42,7 @@ const TransportCatalogue::Stop *TransportCatalogue::get_stop(std::string_view st
         return &(*found);
     return nullptr;
 }
+
 size_t TransportCatalogue::get_stop_count(std::string_view bus) const
 {
     return get_bus(bus)->stops.size();
@@ -49,6 +53,7 @@ size_t TransportCatalogue::get_unique_stop_count(std::string_view bus) const
     std::set<const Stop *> unique_stop{stops.cbegin(), stops.cend()};
     return unique_stop.size();
 }
+
 double TransportCatalogue::get_route_length(std::string_view bus) const
 {
     auto &stops = get_bus(bus)->stops;
@@ -59,6 +64,7 @@ double TransportCatalogue::get_route_length(std::string_view bus) const
     }
     return route_length;
 }
+
     const std::unordered_set<TransportCatalogue::Bus, TransportCatalogue::Bus_Hash>& TransportCatalogue::get_buses() const {
         return buses_;
     }
