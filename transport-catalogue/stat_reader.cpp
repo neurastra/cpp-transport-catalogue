@@ -18,6 +18,7 @@ Request::Req Request::ParseRequest(const std::string_view request)
     result.what = request.substr(pos, last_pos - pos + 1);
     return result;
 }
+
 void Request::ParseAndPrintStat(const Data::TransportCatalogue &transport_catalogue, std::string_view request,
                        std::ostream &output)
 {
@@ -31,7 +32,12 @@ void Request::ParseAndPrintStat(const Data::TransportCatalogue &transport_catalo
         }
         else
         {
-            PrintBusData(transport_catalogue, parsed.what, output);
+            size_t stop_on_route = transport_catalogue.get_stop_count(parsed.what);
+            size_t unique_stop_on_route = transport_catalogue.get_unique_stop_count(parsed.what);
+            double route_length = transport_catalogue.get_route_length(parsed.what);
+            output << stop_on_route << " stops on route, "sv;
+            output << unique_stop_on_route << " unique stops, "sv;
+            put_route_to_output(route_length, output);
         }
         return;
     }
@@ -44,40 +50,28 @@ void Request::ParseAndPrintStat(const Data::TransportCatalogue &transport_catalo
         }
         else
         {
-            PrintBusStopData(transport_catalogue, stop, output);
+            std::set<std::string_view> bus_list;
+            for (const auto &bus : transport_catalogue.get_buses())
+            {
+                if (std::find(bus.stops.cbegin(), bus.stops.cend(), stop) != bus.stops.cend())
+                    bus_list.insert(bus.name);
+            }
+            if (bus_list.empty())
+            {
+                output << "no buses\n";
+                return;
+            }
+            output << "buses"sv;
+            for (const auto &bus : bus_list)
+            {
+                output << " "sv << bus;
+            }
+            output << "\n";
         }
     }
 }
 
-void Request::PrintBusData(const Data::TransportCatalogue &transport_catalogue, std::string_view bus_name, std::ostream &output)
-{
-    double route_length = transport_catalogue.get_route_length(bus_name);
-    output << stop_on_route << " stops on route, "sv;
-    output << unique_stop_on_route << " unique stops, "sv;
-    PutRouteToOutput(route_length, output);
-}
-
-void Request::PrintBusStopData(const Data::TransportCatalogue &transport_catalogue, const Data::Stop* stop, std::ostream &output)
-{
-    std::set<std::string_view> bus_list;
-    for (const auto &bus : transport_catalogue.get_buses())
-    {
-        if (std::find(bus.stops.cbegin(), bus.stops.cend(), stop) != bus.stops.cend())
-            bus_list.insert(bus.name);
-    }
-    if (bus_list.empty())
-    {
-        output << "no buses\n";
-        return;
-    }
-    output << "buses"sv;
-    for (const auto &bus : bus_list)
-    {
-        output << " "sv << bus;
-    }
-    output << "\n";
-}
-void PutRouteToOutput(double value, std::ostream &output)
+void put_route_to_output(double value, std::ostream &output)
 {
     int precision = 1;
     while (true)
