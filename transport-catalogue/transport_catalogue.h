@@ -1,75 +1,73 @@
 #pragma once
-
-#include <string>
 #include <deque>
-#include <iostream>
-#include <set>
-#include <algorithm>
-#include <unordered_set>
+#include <string>
 #include <vector>
-#include <string_view>
+ 
+#include <iomanip>
+#include <iostream>
+ 
+#include <unordered_set>
+#include <unordered_map>
+ 
 #include "geo.h"
-
-using Geo::Coordinates;
-
-namespace Data
-{
-    class TransportCatalogue
-    {
-        struct Bus;
-        struct Stop;
-        struct Bus_Hash;
-
-    public:
-        void add_bus(std::string_view name, std::vector<std::string_view> stops);
-        void add_stop(std::string_view name, Coordinates &&coordinates);
-        const Bus *get_bus(std::string_view bus) const;
-        const Stop *get_stop(std::string_view stop) const;
-        const std::unordered_set<Bus, Bus_Hash> &get_buses() const;
-        size_t get_stop_count(std::string_view bus) const;
-        size_t get_unique_stop_count(std::string_view bus) const;
-        double get_route_length(std::string_view bus) const;
-
-    private:
-        struct Stop
-        {
-            std::string name;
-            Coordinates coordinates;
-
-            bool operator==(const Stop &stop) const
-            {
-                return name == stop.name && coordinates == stop.coordinates;
-            }
-        };
-
-        struct Bus
-        {
-            std::string name;
-            std::deque<const Stop *> stops;
-
-            bool operator==(const Bus &bus) const
-            {
-                return name == bus.name;
-            }
-        };
-
-        struct Bus_Hash
-        {
-            size_t operator()(const Bus &bus) const
-            {
-                return std::hash<std::string>{}(bus.name);
-            }
-        };
-
-        struct Stop_Hash
-        {
-            size_t operator()(const Stop &stop) const
-            {
-                return static_cast<size_t>(static_cast<int>((stop.coordinates.lat * stop.coordinates.lng * 100000.0)));
-            }
-        };
-
-        std::unordered_set<Bus, Bus_Hash> buses_;
-        std::unordered_set<Stop, Stop_Hash> stops_;
-    };
-}
+ 
+struct Bus;
+ 
+struct Stop {    
+    std::string name_;
+    double latitude_;
+    double longitude_;
+ 
+    std::vector<Bus*> buses_;
+};
+ 
+struct Bus { 
+    std::string name_;
+    std::vector<Stop*> stops_;
+};
+ 
+struct Distance {    
+    const Stop* A;
+    const Stop* B;
+    int distance;
+};
+ 
+class DistanceHasher {
+public:
+    std::size_t operator()(const std::pair<const Stop*, const Stop*> pair_stops) const noexcept {
+        auto hash_1 = static_cast<const void*>(pair_stops.first);
+        auto hash_2 = static_cast<const void*>(pair_stops.second);
+        return hasher_(hash_1) * 17 + hasher_(hash_2);
+    }
+private:
+    std::hash<const void*> hasher_;//struct
+};
+ 
+typedef  std::unordered_map<std::string_view , Stop*> StopMap;
+typedef  std::unordered_map<std::string_view , Bus*> BusMap;
+typedef  std::unordered_map<std::pair<const Stop*, const Stop*>, int, DistanceHasher> DistanceMap;
+ 
+class TransportCatalogue {
+public:   
+    void add_bus(Bus&& bus);
+    void add_stop(Stop&& stop);
+    void add_distance(std::vector<Distance> distances);
+ 
+    Bus* get_bus(std::string_view _bus_name);
+    Stop* get_stop(std::string_view _stop_name);
+ 
+    std::unordered_set<const Bus*> stop_get_uniq_buses(Stop* stop);    
+    std::unordered_set<const Stop*> get_uniq_stops(Bus* bus);
+    double get_length(Bus* bus);
+ 
+    size_t get_distance_stop(const Stop* _start, const Stop* _finish);
+    size_t get_distance_to_bus(Bus* _bus);
+private:
+    std::deque<Stop> stops_;
+    StopMap stopname_to_stop;
+ 
+    std::deque<Bus> buses_;
+    BusMap busname_to_bus;
+ 
+    DistanceMap distance_to_stop;
+};
